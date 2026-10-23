@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "modelshelf"
+version = "0.1.0"
+description = "See and tidy your local Ollama models: real freeable space, what's loaded on each server, GPU share."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.9"
+
+[project.scripts]
+modelshelf = "modelshelf.cli:main"
+
+[tool.setuptools]
+packages = ["modelshelf"]
