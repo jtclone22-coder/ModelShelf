@@ -33,3 +33,7 @@ Example (the developer's own PC, three Ollama servers):
 Reads `OLLAMA_MODELS` if you moved the store. Nothing to install beyond Python. It is not affiliated with Ollama.
 
 MIT License.
+
+## More tools
+
+Made by [jtclone22-coder](https://github.com/jtclone22-coder): more free Windows tools are on that profile, and paid ones (DevSweep, Overnight, AssetAtlas) are on [Gumroad](https://clonemaster152.gumroad.com).
