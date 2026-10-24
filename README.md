@@ -7,7 +7,7 @@
 
 ## Download
 
-Get **ModelShelf-0.1.0-windows.zip** from [Releases](../../releases/latest), unzip it anywhere and double-click **ModelShelf.exe** in the ModelShelf folder. Nothing to install, and no Python needed.
+Get **ModelShelf-0.1.1-windows.zip** from [Releases](../../releases/latest), unzip it anywhere and double-click **ModelShelf.exe** in the ModelShelf folder. Nothing to install, and no Python needed.
 
 Windows may say "Windows protected your PC" because the app is new: click **More info**, then **Run anyway**.
 
