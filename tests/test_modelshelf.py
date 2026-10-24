@@ -56,6 +56,14 @@ class StoreTests(unittest.TestCase):
     def test_orphans(self) -> None:
         self.assertEqual([p.name for p, _ in store.orphan_blobs(self.root)], ["sha256-leftover"])
 
+    def test_no_orphans_while_a_manifest_is_unreadable_or_a_download_runs(self) -> None:
+        (self.root / "blobs" / "sha256-abc-partial").write_bytes(b"x" * 10)   # a pull in progress
+        self.assertEqual([p.name for p, _ in store.orphan_blobs(self.root)], ["sha256-leftover"])
+        broken = self.root / "manifests" / "registry.ollama.ai" / "library" / "qwen3" / "14b"
+        broken.write_text('{"layers": [{"dig', encoding="utf-8")                # cut off: its blobs are unknown now
+        self.assertEqual(store.orphan_blobs(self.root), [])
+        self.assertEqual(store.unreadable_manifests(self.root), [broken])
+
     def test_loaded_models_and_unload_with_fake_server(self) -> None:
         answer = {"models": [{"name": "qwen3:14b", "size": 10_000, "size_vram": 7_500, "context_length": 8192,
                               "expires_at": "2026-10-22T14:00:00"}]}

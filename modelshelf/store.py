@@ -83,15 +83,33 @@ def read_models(root: Path | None = None) -> list[Model]:
     return models
 
 
+def unreadable_manifests(root: Path | None = None) -> list[Path]:
+    """Manifest files that can't be read: the blobs they list are unknown, so none can be called unused."""
+    manifests = (root or models_root()) / "manifests"
+    bad = []
+    if manifests.is_dir():
+        for path in manifests.rglob("*"):
+            if path.is_file() and len(path.relative_to(manifests).parts) >= 4:
+                try:
+                    if not isinstance(json.loads(path.read_text(encoding="utf-8")), dict):
+                        bad.append(path)
+                except (OSError, ValueError):
+                    bad.append(path)
+    return bad
+
+
 def orphan_blobs(root: Path | None = None) -> list[tuple[Path, int]]:
-    """Blob files no manifest references (left by interrupted pulls or removed models)."""
+    """Blob files no manifest references (left by removed models). Nothing is listed while any manifest is unreadable
+    (its model's blobs would look unused), and a download in progress (*-partial) is never an orphan."""
     root = root or models_root()
+    if unreadable_manifests(root):
+        return []
     referenced = {d.replace(":", "-") for m in read_models(root) for d in m.blobs}
     blobs = root / "blobs"
     if not blobs.is_dir() or not referenced:
         return []
     return [(p, p.stat().st_size) for p in blobs.iterdir()
-            if p.is_file() and p.name.startswith("sha256-") and p.name not in referenced]
+            if p.is_file() and p.name.startswith("sha256-") and "-partial" not in p.name and p.name not in referenced]
 
 
 # ----------------------------------------------------------------------------- running servers

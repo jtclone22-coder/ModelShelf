@@ -55,6 +55,11 @@ def cmd_unload(args) -> int:
 
 
 def cmd_orphans(args) -> int:
+    unreadable = store.unreadable_manifests()
+    if unreadable:
+        print(f"{len(unreadable)} model manifest(s) can't be read (e.g. {unreadable[0]}), so no blob can be called unused "
+              "right now: their models' files would look like leftovers.")
+        return 1
     orphans = store.orphan_blobs()
     for path, size in orphans:
         print(f"{store.human(size):>9}  {path}")
